@@ -1,41 +1,28 @@
 #!/usr/bin/python3
-"""
-Exports all tasks for a given employee ID to a CSV file.
-"""
+"""Exports tasks of an employee to a CSV file"""
 
 import csv
 import requests
 import sys
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2 or not sys.argv[1].isdigit():
-        print("Usage: ./1-export_to_CSV.py <employee_id>")
-        sys.exit(1)
-
-    employee_id = int(sys.argv[1])
-    user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    todos_url = (
-            f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
-            )
+    user_id = sys.argv[1]
+    user_url = "https://jsonplaceholder.typicode.com/users/{}".format(user_id)
+    todos_url = "https://jsonplaceholder.typicode.com/todos?userId={}".format(user_id)
 
     user_response = requests.get(user_url)
-    if user_response.status_code != 200:
-        print("User not found")
-        sys.exit(1)
-
-    user_data = user_response.json()
-    username = user_data.get("username")
-
     todos_response = requests.get(todos_url)
+
+    username = user_response.json().get("username")
     todos = todos_response.json()
 
-    filename = f"{employee_id}.csv"
-    with open(filename, mode="w", newline="", encoding="utf-8") as csvfile:
-    writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-    for task in todos:
-        writer.writerow([
-        employee_id,
-        username,
-        task.get("completed"),
-        task.get("title")
-    ])
+    filename = "{}.csv".format(user_id)
+
+    with open(filename, mode='w', newline='') as csvfile: 
+        writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+        for task in todos:
+            writer.writerow([user_id,
+                             username,
+                             task.get("completed"),
+                             task.get("title")])
+                                                                            
