@@ -1,18 +1,17 @@
 #!/usr/bin/python3
 """
-Exports data of all employees' TODO lists in JSON format.
+Exports all employees' TODO list data to JSON format.
 """
 
 import json
 import requests
-import sys
 
 if __name__ == "__main__":
-    url_users = "https://jsonplaceholder.typicode.com/users"
-    url_todos = "https://jsonplaceholder.typicode.com/todos"
+    users_url = "https://jsonplaceholder.typicode.com/users"
+    todos_url = "https://jsonplaceholder.typicode.com/todos"
 
-    users = requests.get(url_users).json()
-    todos = requests.get(url_todos).json()
+    users = requests.get(users_url).json()
+    todos = requests.get(todos_url).json()
 
     all_tasks = {}
 
@@ -23,14 +22,15 @@ if __name__ == "__main__":
 
     for task in todos:
         if task.get("userId") == user_id:
-        user_tasks.append({
-            "username": username,
-            "task": task.get("title"),
-            "completed": task.get("completed")
-        })
+            user_tasks.append({
+                "username": username,
+                "task": task.get("title"),
+                "completed": task.get("completed")
+            })
 
     all_tasks[user_id] = user_tasks
 
-    with open("todo_all_employees.json", "w") as json_file:
-        json.dump(all_tasks, json_file)
+    with open("todo_all_employees.json", "w") as f:
+        json.dump(all_tasks, f)
+                                                                                                                            
                                                                                                                             
